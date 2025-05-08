@@ -15,14 +15,14 @@ public class DriverFactory {
     public static  void init_driver(String browser) {
         if (browser.equalsIgnoreCase("chrome")) {
             ChromeOptions options= new ChromeOptions();
-            options.addArguments("headless");
+            options.addArguments("--blink-settings=imagesEnabled=false");//disabling the images
+            options.addArguments("--disable-images");
+            options.addArguments("--disable-javascript");
+            options.addArguments("--remote-allow-origins=*");
+            options.addArguments("--headless");//executing in headless mode
             options.addArguments("--disable-popup-blocking");
-
-            options.addArguments("-–disable-notifications");
-
-            options.addArguments("-–disable-extensions");
-
-            options.addArguments("--blink-settings=imagesEnabled=false");
+            options.addArguments("--disable-notifications");
+            options.addArguments("--disable-extensions");
 //            WebDriverManager.chromedriver().setup();
             //tlDriver.set(new ChromeDriver(options));
             driver= new ChromeDriver(options);

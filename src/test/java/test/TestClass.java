@@ -1,152 +1,33 @@
 package test;
+
 import driverManager.DriverFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import scrapper.BaseClass;
 import scrapper.RecipeClass;
 import utils.ExcelReader;
 
-public  class  TestClass {
-
+public class TestClass {
     public static void main(String[] args) throws InterruptedException {
         DriverFactory.init_driver("chrome");
         WebDriver driver = DriverFactory.getDriver();
-
-        String[] ingredientsToAdd = {"Fish",
-                "prawn",
-                "poultry",
-                "egg",
-                "Onion",
-                "Garlic",
-                "turmeric",
-                "Ginger",
-                "Butter",
-                "ghee",
-                "hard cheese",
-                "paneer",
-                "cottage cheese",
-                "sour cream",
-                "greek yogurt",
-                "hung curd",
-                "almond",
-                "pistachio",
-                "brazil nut",
-                "walnut",
-                "pine nut",
-                "hazelnut",
-                "macadamia nut",
-                "pecan",
-                "hemp seed",
-                "sunflower seed",
-                "sesame seed",
-                "chia seed",
-                "flax seed",
-                "Blueberry",
-                "blackberry",
-                "strawberry"};
-        String[] ingredientsToEliminate = {
-                "Ham", "sausage", "tinned fish", "tuna", "sardines",
-                "yams",
-                "beets",
-                "parsnip",
-                "turnip",
-                "rutabagas",
-                "carrot",
-                "yuca",
-                "kohlrabi",
-                "celery root",
-                "horseradish",
-                "daikon",
-                "jicama",
-                "radish",
-                "pumpkin",
-                "squash",
-                "Whole fat milk",
-                "low fat milk",
-                "fat free milk",
-                "Evaporated milk",
-                "condensed milk",
-                "curd",
-                "buttermilk",
-                "ice cream",
-                "flavored milk",
-                "sweetened yogurt",
-                "soft cheese",
-                "grain",
-                "Wheat",
-                "oat",
-                "barely",
-                "rice",
-                "millet",
-                "jowar",
-                "bajra",
-                "corn",
-                "dal",
-                "lentil",
-                "banana",
-                "mango",
-                "papaya",
-                "plantain",
-                "apple",
-                "orange",
-                "pineapple",
-                "pear",
-                "tangerine",
-                "all melon varieties",
-                "peach",
-                "plum",
-                "nectarine",
-                "Avocado",
-                "olive oil",
-                "coconut oil",
-                "soybean oil",
-                "corn oil",
-                "safflower oil",
-                "sunflower oil",
-                "rapeseed oil",
-                "peanut oil",
-                "cottonseed oil",
-                "canola oil",
-                "mustard oil",
-                "sugar",
-                "jaggery",
-                "glucose",
-                "fructose",
-                "corn syrup",
-                "cane sugar",
-                "aspartame",
-                "cane solids",
-                "maltose",
-                "dextrose",
-                "sorbitol",
-                "mannitol",
-                "xylitol",
-                "maltodextrin",
-                "molasses",
-                "brown rice syrup",
-                "splenda",
-                "nutra sweet",
-                "stevia",
-                "barley malt",
-                "potato",
-                "corn",
-                "pea"
-        };
-
+        Map<String, List<String>> filterMap = ExcelReader.readExcelData();
+        String[] ingredientsToAdd = filterMap.get(ExcelReader.LFV_Add).toArray(new String[0]);
+        String[] ingredientsToEliminate = filterMap.get(ExcelReader.LFV_Eliminate).toArray(new String[0]);
         try {
-
             driver.get("https://www.tarladalal.com/recipes/");
             WebElement paginationElement = driver.findElement(By.xpath("//ul[@class=\"pagination justify-content-center align-items-center\"]/li[position() = last() - 1]/a"));
             int totalPages = Integer.parseInt(paginationElement.getText());
             System.out.println("totalPages to: " + totalPages);
             ArrayList<RecipeClass> eliminatedRecipes = new ArrayList<>();
             ArrayList<RecipeClass> addedRecipes = new ArrayList<>();
+            ArrayList<RecipeClass> notAddedRecipes = new ArrayList<>();
 
 
             for (int o = 315; o <= totalPages; o++) {
@@ -154,10 +35,7 @@ public  class  TestClass {
 
                 driver.get(url);
                 System.out.println("url: " + url);
-
                 List<WebElement> recipeElements = driver.findElements(By.xpath("(//div[contains(@class, 'recipe-list d-flex flex-wrap')])[1]/div"));
-                // List<WebElement> recipeElements = driver.findElements(By.xpath("//main/section/div[2]/div/div[1]/div/div"));
-
                 System.out.println("recipeElements size: " + recipeElements.size());
                 for (int i = 0; i < recipeElements.size(); i++) {
                     // Re-fetch the elements (important after navigation or click)
@@ -230,6 +108,8 @@ public  class  TestClass {
                                 if (isAdded) {
                                     addedRecipes.add(recipe);
                                     System.out.println(" This recipe is ALLOWED");
+                                }else{
+                                    notAddedRecipes.add(recipe) ;
                                 }
                             }
 
@@ -243,6 +123,7 @@ public  class  TestClass {
                 }
                 System.out.println("EliminatedRecipesSize" + eliminatedRecipes.size());
                 System.out.println("AddedRecipesSize" + addedRecipes.size());
+                System.out.println("notAddedRecipesSize" + notAddedRecipes.size());
 
                 System.out.println("EliminatedRecipes" + eliminatedRecipes);
                 System.out.println("AddedRecipes" + addedRecipes);
