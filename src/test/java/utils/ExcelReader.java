@@ -1,10 +1,13 @@
 package utils;
 
+import driverManager.DriverFactory;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ExcelReader {
+    private static final Logger logger = LoggerFactory.getLogger(ExcelReader.class);
 
     //Eliminate	Add	To Add ( if not fully vegan)	Recipes to avoid	Optional recipe
     public static final String LFV_Eliminate = "Final list for LFV Elimination  - Eliminate";
@@ -92,7 +96,10 @@ public class ExcelReader {
 
         for (Map.Entry<Integer, List<String>> entry : map.entrySet()) {
             finalMap.put(sheetName + " - " + kv.get(entry.getKey()), entry.getValue());
+
         }
+        logger.info("finalMap"+finalMap.size());
+
         return finalMap;
     }
 }

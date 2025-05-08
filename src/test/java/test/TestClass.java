@@ -10,10 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scrapper.RecipeClass;
 import utils.ExcelReader;
 
 public class TestClass {
+    private static final Logger logger = LoggerFactory.getLogger(TestClass.class);
+
     public static void main(String[] args) throws InterruptedException {
         DriverFactory.init_driver("chrome");
         WebDriver driver = DriverFactory.getDriver();
@@ -24,17 +28,16 @@ public class TestClass {
             driver.get("https://www.tarladalal.com/recipes/");
             WebElement paginationElement = driver.findElement(By.xpath("//ul[@class=\"pagination justify-content-center align-items-center\"]/li[position() = last() - 1]/a"));
             int totalPages = Integer.parseInt(paginationElement.getText());
-            System.out.println("totalPages to: " + totalPages);
+         logger.info("totalPages to: " + totalPages);
             ArrayList<RecipeClass> eliminatedRecipes = new ArrayList<>();
             ArrayList<RecipeClass> addedRecipes = new ArrayList<>();
-            ArrayList<RecipeClass> notAddedRecipes = new ArrayList<>();
 
 
             for (int o = 315; o <= totalPages; o++) {
                 String url = "https://www.tarladalal.com/recipes/?page=" + o;
 
                 driver.get(url);
-                System.out.println("url: " + url);
+                logger.info("url: " + url);
                 List<WebElement> recipeElements = driver.findElements(By.xpath("(//div[contains(@class, 'recipe-list d-flex flex-wrap')])[1]/div"));
                 System.out.println("recipeElements size: " + recipeElements.size());
                 for (int i = 0; i < recipeElements.size(); i++) {
@@ -58,7 +61,7 @@ public class TestClass {
 
 
                             String recipeUrl = driver.getCurrentUrl();
-                            System.out.println(recipeUrl);
+                            logger.info(recipeUrl);
                             //Split the URL by hyphen and 'r' to get the parts
                             String[] parts = recipeUrl.split("-");
                             // The recipe ID is the last part before 'r'
@@ -100,17 +103,15 @@ public class TestClass {
                             recipe.setRecipeURL(recipeUrl);
                             recipe.setRecipeName(recipeHeadingTitle.getText());
                             recipe.setPreparation_Time(preparationTime.getText());
-                            System.out.println("Ingredients:" + buffer.toString());
+                            logger.info("Ingredients:" + buffer.toString());
                             if (isEliminated) {
                                 eliminatedRecipes.add(recipe);
-                                System.out.println(" This recipe is NOT allowed (contains eliminated items)");
+                                logger.info(" This recipe is NOT allowed (contains eliminated items)");
                             } else {
-                                if (isAdded) {
+//                                if (isAdded) {
                                     addedRecipes.add(recipe);
-                                    System.out.println(" This recipe is ALLOWED");
-                                }else{
-                                    notAddedRecipes.add(recipe) ;
-                                }
+                                    logger.info(" This recipe is ALLOWED");
+//                                }
                             }
 
 
@@ -123,7 +124,6 @@ public class TestClass {
                 }
                 System.out.println("EliminatedRecipesSize" + eliminatedRecipes.size());
                 System.out.println("AddedRecipesSize" + addedRecipes.size());
-                System.out.println("notAddedRecipesSize" + notAddedRecipes.size());
 
                 System.out.println("EliminatedRecipes" + eliminatedRecipes);
                 System.out.println("AddedRecipes" + addedRecipes);
