@@ -17,7 +17,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import driverManager.DriverFactory;
-import utils.DatabaseUtil;
+import utils.DatabaseUtil1;
 import utils.ExcelReaderCode;
 
 public class RecipeInfoScrap extends DriverFactory {
@@ -139,10 +139,10 @@ public class RecipeInfoScrap extends DriverFactory {
 
 		System.out.println("-----------------------------------------------------");
 		if(flag.equals("Eliminate")) {
-		DatabaseUtil.insertRecipe(recipeId,recipeName,rec_Category,foodCategory,ingredients,prepTime,cookingTime,tags,makesServings,cuisineCategory,recipeDescription,methodListString,nutrientValues,url);
+		DatabaseUtil1.insertRecipe(recipeId,recipeName,rec_Category,foodCategory,ingredients,prepTime,cookingTime,tags,makesServings,cuisineCategory,recipeDescription,methodListString,nutrientValues,url);
 		}
 		else if(flag.equals("Add")) {
-			DatabaseUtil.insertRecipeAdd(recipeId,recipeName,rec_Category,foodCategory,ingredients,prepTime,cookingTime,tags,makesServings,cuisineCategory,recipeDescription,methodListString,nutrientValues,url);
+			DatabaseUtil1.insertRecipeAdd(recipeId,recipeName,rec_Category,foodCategory,ingredients,prepTime,cookingTime,tags,makesServings,cuisineCategory,recipeDescription,methodListString,nutrientValues,url);
 			
 		}
 		CheckAdvertisement();
@@ -200,7 +200,7 @@ public class RecipeInfoScrap extends DriverFactory {
 	public void LfvRecipe() {
 		driver.get("https://www.tarladalal.com/recipe-category/");
 		try {
-			DatabaseUtil.connect();
+			DatabaseUtil1.connect();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -215,7 +215,7 @@ public class RecipeInfoScrap extends DriverFactory {
 		}
 		System.out.println("******** Found " + recipeCategory.size() + " recipe categories.");
 		// for (String categoryLink : categorylinks)
-		for (int i = 5; i < 6; i++) {
+		for (int i = 8; i < 9; i++) {
 			String categoryLink = categorylinks.get(i);
 			CheckAdvertisement();
 			System.out.println("**************** New category is started ***************");
